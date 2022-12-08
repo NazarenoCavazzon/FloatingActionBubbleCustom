@@ -1,53 +1,48 @@
 import 'package:flutter/material.dart';
 
-class Bubble {
-  const Bubble({
+class BubbleMenu extends StatelessWidget {
+  const BubbleMenu({
+    super.key,
     required this.title,
-    required this.titleStyle,
+    required this.style,
     required this.iconColor,
     required this.bubbleColor,
     required this.icon,
-    required this.onPress,
+    required this.onPressed,
   });
 
   final IconData icon;
   final Color iconColor;
   final Color bubbleColor;
-  final void Function() onPress;
+  final void Function() onPressed;
   final String title;
-  final TextStyle titleStyle;
-}
-
-class BubbleMenu extends StatelessWidget {
-  const BubbleMenu(this.item, {Key? key}) : super(key: key);
-
-  final Bubble item;
+  final TextStyle style;
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
       shape: const StadiumBorder(),
       padding: const EdgeInsets.only(top: 11, bottom: 13, left: 32, right: 32),
-      color: item.bubbleColor,
+      color: bubbleColor,
       splashColor: Colors.grey.withOpacity(0.1),
       highlightColor: Colors.grey.withOpacity(0.1),
       elevation: 2,
       highlightElevation: 2,
-      disabledColor: item.bubbleColor,
-      onPressed: item.onPress,
+      disabledColor: bubbleColor,
+      onPressed: onPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Icon(
-            item.icon,
-            color: item.iconColor,
+            icon,
+            color: iconColor,
           ),
           const SizedBox(
-            width: 10.0,
+            width: 10,
           ),
           Text(
-            item.title,
-            style: item.titleStyle,
+            title,
+            style: style,
           ),
         ],
       ),
@@ -63,42 +58,45 @@ class _DefaultHeroTag {
 
 class FloatingActionBubble extends AnimatedWidget {
   const FloatingActionBubble({
-    Key? key,
+    super.key,
     required this.items,
     required this.onPress,
     required this.iconColor,
-    required this.backGroundColor,
-    required Animation animation,
+    required this.backgroundColor,
+    required Animation<double> animation,
+    this.separation = 12,
     this.heroTag,
     this.iconData,
     this.animatedIconData,
-  })  : assert((iconData == null && animatedIconData != null) ||
-            (iconData != null && animatedIconData == null)),
-        super(listenable: animation, key: key);
+  })  : assert(
+          (iconData == null && animatedIconData != null) ||
+              (iconData != null && animatedIconData == null),
+          'You must provide either iconData or animatedIconData, but not both',
+        ),
+        super(listenable: animation);
 
-  final List<Bubble> items;
+  final List<Widget> items;
   final void Function() onPress;
   final AnimatedIconData? animatedIconData;
   final Object? heroTag;
   final IconData? iconData;
   final Color iconColor;
-  final Color backGroundColor;
+  final Color backgroundColor;
+  final double separation;
 
-  get _animation => listenable;
+  Animation<double> get _animation => listenable as Animation<double>;
 
   Widget buildItem(BuildContext context, int index) {
     final screenWidth = MediaQuery.of(context).size.width;
-
-    TextDirection textDirection = Directionality.of(context);
-
-    double animationDirection = textDirection == TextDirection.ltr ? -1 : 1;
+    final textDirection = Directionality.of(context);
+    final animationDirection = textDirection == TextDirection.ltr ? -1 : 1;
 
     final transform = Matrix4.translationValues(
       animationDirection *
           (screenWidth - _animation.value * screenWidth) *
           ((items.length - index) / 4),
-      0.0,
-      0.0,
+      0,
+      0,
     );
 
     return Align(
@@ -109,7 +107,7 @@ class FloatingActionBubble extends AnimatedWidget {
         transform: transform,
         child: Opacity(
           opacity: _animation.value,
-          child: BubbleMenu(items[index]),
+          child: items[index],
         ),
       ),
     );
@@ -126,15 +124,16 @@ class FloatingActionBubble extends AnimatedWidget {
           child: ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (_, __) => const SizedBox(height: 12.0),
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            separatorBuilder: (_, __) => SizedBox(height: separation),
+            padding: EdgeInsets.symmetric(vertical: separation),
             itemCount: items.length,
             itemBuilder: buildItem,
           ),
         ),
         FloatingActionButton(
           heroTag: heroTag ?? const _DefaultHeroTag(),
-          backgroundColor: backGroundColor,
+          backgroundColor: backgroundColor,
+          onPressed: onPress,
           // iconData is mutually exclusive with animatedIconData
           // only 1 can be null at the time
           child: iconData == null
@@ -147,7 +146,6 @@ class FloatingActionBubble extends AnimatedWidget {
                   iconData,
                   color: iconColor,
                 ),
-          onPressed: onPress,
         ),
       ],
     );

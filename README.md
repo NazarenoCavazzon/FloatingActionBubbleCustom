@@ -1,22 +1,9 @@
-# Floating Action Bubble 
-[![Pub](https://img.shields.io/pub/v/fab_circular_menu.svg)](https://pub.dev/packages/floating_action_bubble)
-[![Pull Requests are welcome](https://img.shields.io/badge/license-MIT-blue)](https://github.com/marianocordoba/fab-circular-menu/blob/master/LICENSE)
-[![Codemagic build status](https://api.codemagic.io/apps/5e9371f31838ac3981fd1397/5e9371f31838ac3981fd1396/status_badge.svg)](https://codemagic.io/apps/5e9371f31838ac3981fd1397/5e9371f31838ac3981fd1396/latest_build)
+# Floating Action Bubble Custom
 
-
-A Flutter package to create a animated menu using a Floating Action Button.
+A Flutter package to create an animated menu using a Floating Action Button.
 
 
 ![Showcase](https://imgur.com/IbinJsI.gif)
-
-## Installation
-
-Just add `floating_action_bubble` to your [pubspec.yml](https://flutter.io/using-packages/) file
-
-```yml
-dependencies:
-  floating_action_bubble: 1.1.2
-```
 
 ## Example
 
@@ -29,13 +16,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Directionality(textDirection: TextDirection.rtl, child: MyHomePage(title: 'Floating Action Bubble Demo')),
+      home: Directionality(
+        textDirection: TextDirection.rtl,
+        child: MyHomePage(title: 'Floating Action Bubble Demo'),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({super.key, this.title});
+
   final String title;
 
   @override
@@ -49,85 +40,75 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   @override
   void initState(){
-        
+    super.initState();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 260),
     );
-
-    final curvedAnimation = CurvedAnimation(curve: Curves.easeInOut, parent: _animationController);
+    final curvedAnimation = CurvedAnimation(
+      curve: Curves.easeInOut,
+      parent: _animationController,
+    );
     _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
-    
-    
-    super.initState();
-
-
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      
-      //Init Floating Action Bubble 
+      //Init Floating Action Bubble
       floatingActionButton: FloatingActionBubble(
+        // animation controller
+        animation: _animation,
+        // On pressed change animation state
+        onPressed: () => _animationController.isCompleted
+              ? _animationController.reverse()
+              : _animationController.forward(),
+        // Floating Action button Icon color
+        iconColor: Colors.blue,
+        // Flaoting Action button Icon
+        iconData: Icons.ac_unit,
+        backgroundColor: Colors.white,
         // Menu items
-        items: <Bubble>[
-
+        items: <Widget>[
           // Floating action menu item
-          Bubble(
-            title:"Settings",
-            iconColor :Colors.white,
-            bubbleColor : Colors.blue,
-            icon:Icons.settings,
-            titleStyle:TextStyle(fontSize: 16 , color: Colors.white),
-            onPress: () {
+          BubbleMenu(
+            title: 'Settings',
+            iconColor: Colors.white,
+            bubbleColor: Colors.blue,
+            icon: Icons.settings,
+            titleStyle: TextStyle(fontSize: 16 , color: Colors.white),
+            onPressed: () {
               _animationController.reverse();
             },
           ),
           // Floating action menu item
-          Bubble(
-            title:"Profile",
-            iconColor :Colors.white,
-            bubbleColor : Colors.blue,
-            icon:Icons.people,
-            titleStyle:TextStyle(fontSize: 16 , color: Colors.white),
-            onPress: () {
+          BubbleMenu(
+            title: 'Profile',
+            iconColor: Colors.white,
+            bubbleColor: Colors.blue,
+            icon: Icons.people,
+            titleStyle: TextStyle(fontSize: 16 , color: Colors.white),
+            onPressed: () {
               _animationController.reverse();
             },
           ),
           //Floating action menu item
-          Bubble(
-            title:"Home",
-            iconColor :Colors.white,
-            bubbleColor : Colors.blue,
-            icon:Icons.home,
-            titleStyle:TextStyle(fontSize: 16 , color: Colors.white),
-            onPress: () {
+          BubbleMenu(
+            title: 'Home',
+            iconColor: Colors.white,
+            bubbleColor: Colors.blue,
+            icon: Icons.home,
+            titleStyle: TextStyle(fontSize: 16 , color: Colors.white),
+            onPressed: () {
               Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) => Homepage()));
               _animationController.reverse();
             },
           ),
         ],
-
-        // animation controller
-        animation: _animation,
-
-        // On pressed change animation state
-        onPress: () => _animationController.isCompleted
-              ? _animationController.reverse()
-              : _animationController.forward(),
-        
-        // Floating Action button Icon color
-        iconColor: Colors.blue,
-
-        // Flaoting Action button Icon 
-        iconData: Icons.ac_unit, 
-        backGroundColor: Colors.white,
       )
     );
   }
@@ -135,25 +116,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 }
 ```
 
-You can check for a more complete example in the [example](https://github.com/Darshan0/floating_action_bubble/master/example) directory.
+You can check for a more complete example in the [example](https://github.com/NazarenoCavazzon/FloatingActionBubbleCustom/master/example) directory.
 
 ## Customize
+You can use the pre-built BubbleMenu or your own widget :).
 
-You can customize the widget appareance using the following properties:
-
-| Property  | Description |
-|----------|-------------|
-| fabColor | Sets the FAB color |
-| fabIcon | Sets the FAB icon |
-| BubbleTitle | Sets the menu item title |
-| BubbleTitleStyle | Sets the menu item title style |
-| BubbleIcon | Sets the menu  item icon |
-| BubbleIconColor | Sets the menu item icon color |
-| BubbleColor | Sets the menu item color |
-| animation| Allows to animated the menu items |
-
-
-
-## Contributing
-
-If you want to contribute to this project, please submit a PR to the development branch Thank you 😁

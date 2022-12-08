@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/floating_action_bubble.iml" filepath="$PROJECT_DIR$/floating_action_bubble.iml" />
+      <module fileurl="file://$PROJECT_DIR$/floating_action_bubble_custom.iml" filepath="$PROJECT_DIR$/floating_action_bubble_custom.iml" />
     </modules>
   </component>
 </project>
